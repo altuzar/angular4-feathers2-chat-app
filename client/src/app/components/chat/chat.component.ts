@@ -11,7 +11,12 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ChatComponent {
   messages$: Observable<any[]>;
-  users$: Observable<any[]>;
+  users$: Observable<any[]>; 
+  update: any;
+  textMessage: any;
+  _id: any;
+  createAt: any;
+
 
   constructor(private data: DataService, private auth: AuthService) {
     // get messages from data service
@@ -26,13 +31,37 @@ export class ChatComponent {
     this.users$ = data.users$()
       // our data is paginated, so map to .data
       .map(u => u.data);
-  }
+  } 
 
   sendMessage(message: string) {
     this.data.sendMessage(message);
   }
 
+  updateMessage(id: any, message: string, createdAt:any){
+    console.log(id, message);
+    let data = {
+      text: message,
+      createdAt: createdAt
+    }
+    this.data.updateMessage(id, data);
+    this.update = false;
+  }
+
+  // Changing the Form from Submit to Update.
+  changeText(id:any, message:any, createdAt:string){
+    console.log(createdAt);
+    this.update = true;
+    this.textMessage = message;
+    this._id = id;
+    this.createAt = createdAt;
+  }
+
+  deleteMessage(id:any){
+    this.data.removeMessage(id);
+  }
+
   logOut() {
     this.auth.logOut();
   }
+  
 }

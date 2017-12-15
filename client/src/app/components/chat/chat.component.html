@@ -7,13 +7,13 @@
     </div>
   </header>
 
-  <div class="flex flex-row flex-1 clear">
+  <div class="flex flex-row flex-1 clear"> 
     <aside class="sidebar col col-3 flex flex-column flex-space-between" *ngIf="users$ | async as users">
       <header class="flex flex-row flex-center">
         <h4 class="font-300 text-center">
           <span class="font-600 online-count">{{users.length}}</span> users
         </h4>
-      </header>
+      </header> 
 
       <ul class="flex flex-column flex-1 list-unstyled user-list">
         <li *ngFor="let user of users">
@@ -32,21 +32,28 @@
 
     <div class="flex flex-column col col-9">
       <main class="chat flex flex-column flex-1 clear" #chat [scrollTop]="chat.scrollHeight - chat.clientHeight">
-        <div class="message flex flex-row" *ngFor="let message of messages$ | async">
+        <div class="message flex flex-row" *ngFor="let message of messages$ | async" >
           <img [src]="message.user.avatar" [alt]="message.user.email" class="avatar">
           <div class="message-wrapper">
             <p class="message-header">
               <span class="username font-600">{{message.user.email}}</span>
-              <span class="sent-date font-300">{{message.createdAt | date:'MMM dd, hh:mm:ss'}}</span>
+              <span class="sent-date font-300">{{message.createdAt | timeago}}</span>
+              <i class="fa fa-trash deleteBtn" (click)="deleteMessage(message._id)"></i>
             </p>
-            <p class="message-content font-300">{{message.text}}</p>
+            <p class="message-content font-300" (click)="changeText(message._id, message.text, message.createdAt.value)">{{message.text}}</p>
           </div>
         </div>
       </main>
 
-      <form class="flex flex-row flex-space-between" id="send-message">
+      <form class="flex flex-row flex-space-between" id="send-message" *ngIf="!update">
         <input #message type="text" name="text" class="flex flex-1">
         <button class="button-primary" (click)="sendMessage(message.value); message.value = ''">Send</button>
+      </form>
+      <form class="flex flex-row flex-space-between" id="send-message" *ngIf="update">
+        <input #message type="text" name="text" class="flex flex-1" value="{{textMessage}}">
+        <input #id type="hidden" name="text" class="flex flex-1" value="{{_id}}">
+        <input #createdAt type="hidden" name="text" class="flex flex-1" value="{{createAt}}">
+        <button class="button-primary" (click)="updateMessage(id.value, message.value, createdAt.value); message.value = ''">Update</button>
       </form>
     </div>
   </div>
