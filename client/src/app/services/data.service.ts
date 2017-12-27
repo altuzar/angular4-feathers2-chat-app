@@ -10,7 +10,7 @@ import { Feathers } from './feathers.service';
 export class DataService {
   constructor(private feathers: Feathers) {
   }
-
+ 
   messages$() {
     // just returning the observable will query the backend on every subscription
     // using some caching mechanism would be wise in more complex applications
@@ -47,4 +47,20 @@ export class DataService {
         text: message
       });
   }
+
+  updateMessage(id:any, data:any){
+    if(data.text == ''){
+      return;
+    }
+    
+    this.feathers.service('messages').update(id, data);
+
+  }
+
+  removeMessage(id:any){
+    this.feathers.service('messages').remove(id);
+  }
+
+
+
 }
